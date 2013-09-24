@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import pygame
 import pygame.camera
 import pygame.image
@@ -14,15 +16,22 @@ def main(argv):
     except getopt.GetoptError:
         print help
         sys.exit(2)
-    
+
+    lapsetime = ''
+    path      = ''
+
     for opt, arg in opts:
       if opt == '-h':
         print help
         sys.exit()
       elif opt in ("-t", "--lapsetime"):
-         lapsetime = float(arg)
+        lapsetime = float(arg)
       elif opt in ("-p", "--path"):
-         path = arg
+        path = arg
+
+    if (lapsetime == '' or path == ''):
+      print help
+      sys.exit()
 
     pygame.init()
     pygame.camera.init()
