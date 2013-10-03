@@ -10,15 +10,16 @@ from pygame.locals import *
 
 def main(argv):
 
-    help = 'timelapse.py -t <lapsetime> -p <path>'
+    help = 'timelapse.py -t <lapsetime> -p <path> -d <dimensions>'
     try:
-        opts, args = getopt.getopt(argv,"ht:p:", ["lapsetime=","path="])
+        opts, args = getopt.getopt(argv,"hd:t:p:", ["dimensions=","lapsetime=","path="])
     except getopt.GetoptError:
         print help
         sys.exit(2)
 
-    lapsetime = ''
-    path      = ''
+    lapsetime  = ''
+    path       = ''
+    dimensions = (640,480)
 
     for opt, arg in opts:
       if opt == '-h':
@@ -28,6 +29,14 @@ def main(argv):
         lapsetime = float(arg)
       elif opt in ("-p", "--path"):
         path = arg
+      elif opt in ("-d", "--dimensions"):
+        if arg.find('x') == False:
+            print "Dimensions must be in the format <width>x<height> (i.e. 640x480)"
+            sys.exit(2)
+
+        dimensions    = arg.split('x')
+        dimensions[0] = int(dimensions[0])
+        dimensions[1] = int(dimensions[1])
 
     if (lapsetime == '' or path == ''):
       print help
@@ -37,7 +46,7 @@ def main(argv):
     pygame.camera.init()
     camlist = pygame.camera.list_cameras()
     if camlist:
-        cam = pygame.camera.Camera(camlist[0])
+        cam = pygame.camera.Camera(camlist[0], dimensions)
         cam.start()
 
         index = 1
@@ -48,7 +57,8 @@ def main(argv):
                 time.sleep(lapsetime)
             except KeyboardInterrupt:
                 print "Exiting."
-                exit();
+                cam.stop()
+                sys.exit();
     else:
         raise Exception("No cameras found!")
 
