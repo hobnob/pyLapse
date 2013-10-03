@@ -3,9 +3,9 @@
 import pygame
 import pygame.camera
 import pygame.image
-import threading
 import sys
 import getopt
+import time
 from pygame.locals import *
 
 def main(argv):
@@ -40,15 +40,17 @@ def main(argv):
         cam = pygame.camera.Camera(camlist[0])
         cam.start()
 
-        t = threading.Timer(lapsetime, takePicture, [lapsetime, cam, path, 1])
-        t.start()
-        
-
-def takePicture(lapsetime, cam, path, index):
-    pygame.image.save(cam.get_image(), path+'/img_'+`index`+'.jpg')
-    index += 1
-    t = threading.Timer(lapsetime, takePicture, [lapsetime, cam, path, index])
-    t.start()
+        index = 1
+        while True:
+            try:
+                pygame.image.save(cam.get_image(), path+'/img_'+`index`+'.jpg')
+                index += 1
+                time.sleep(lapsetime)
+            except KeyboardInterrupt:
+                print "Exiting."
+                exit();
+    else:
+        raise Exception("No cameras found!")
 
 if __name__ == "__main__":
    main(sys.argv[1:])
