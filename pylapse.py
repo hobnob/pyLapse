@@ -49,11 +49,9 @@ def main(argv):
         cam = pygame.camera.Camera(camlist[0], dimensions)
         cam.start()
 
-        index = 1
         while True:
             try:
-                pygame.image.save(cam.get_image(), path+'/img_'+`index`+'.jpg')
-                index += 1
+                pygame.image.save(cam.get_image(), path+'/img_'+`int(time.time())`+'.jpg')
                 time.sleep(lapsetime)
             except KeyboardInterrupt:
                 print "Exiting."
